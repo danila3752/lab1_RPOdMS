@@ -25,9 +25,8 @@ public class MainActivity extends AppCompatActivity {
     MyDataBase myDB;
     ImageView delete_button;
     CustomAdapter customAdapter;
-    ArrayList<String> notes;
     SearchView search_home;
-    ArrayList<String>  note_id,note_title,note_text;
+    ArrayList<ListItem>  notes;
 
 
 
@@ -62,27 +61,35 @@ public class MainActivity extends AppCompatActivity {
         });
 
         myDB = new MyDataBase(MainActivity.this);
-        note_id=new ArrayList<>();
-        note_title=new ArrayList<>();
-        note_text=new ArrayList<>();
+//        note_id=new ArrayList<>();
+//        note_title=new ArrayList<>();
+//        note_text=new ArrayList<>();
+        notes = new ArrayList<>();
         storeDataInArrays();
 
-        customAdapter = new CustomAdapter(MainActivity.this,this, note_id, note_title, note_text);
+        customAdapter = new CustomAdapter(MainActivity.this,this, notes);
         List_elements.setAdapter(customAdapter);
         List_elements.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-
-         notes = new ArrayList<>();
-         notes.add(note_title.toString());
-         notes.add(note_text.toString());
 
     }
 
     private void filter(String newText) {
-        List<String> filteredlist= new ArrayList<>();
-        for (int i=0;i<notes.size();i++)
-       if(notes.toString().contains(newText))
-        customAdapter.fillterList(filteredlist);
+        Cursor cursor = myDB.readAllData(newText);
+        notes.clear();
+        if(cursor.getCount() == 0){
+            Toast.makeText(this, "No data", Toast.LENGTH_SHORT).show();
+        }else{
+            while (cursor.moveToNext()){
+                ListItem item = new ListItem();
+                item.id = cursor.getInt(0);
+                item.title = cursor.getString(1);
+                item.text = cursor.getString(2);
+                notes.add(item);
+            }
 
+        }
+        cursor.close();
+        customAdapter.fillterList(notes);
     }
 
 
@@ -94,17 +101,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     void storeDataInArrays(){
-        Cursor cursor = myDB.readAllData();
+        Cursor cursor = myDB.readAllData("");
         if(cursor.getCount() == 0){
             Toast.makeText(this, "No data", Toast.LENGTH_SHORT).show();
         }else{
             while (cursor.moveToNext()){
-                note_id.add(cursor.getString(0));
-                note_title.add(cursor.getString(1));
-                note_text.add(cursor.getString(2));
+                ListItem item = new ListItem();
+                item.id = cursor.getInt(0);
+                item.title = cursor.getString(1);
+                item.text = cursor.getString(2);
+                notes.add(item);
             }
 
         }
+        cursor.close();
     }
 
 

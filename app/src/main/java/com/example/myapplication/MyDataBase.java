@@ -5,9 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
 
 public class MyDataBase extends SQLiteOpenHelper {
 
@@ -57,8 +60,8 @@ if (result==-1){
 
 
 
-    Cursor readAllData(){
-        String query = "SELECT * FROM " + Table_Name;
+    Cursor readAllData(String searchText){
+        String query = "SELECT * FROM " + Table_Name + " WHERE " + Column_title + " LIKE '%"+searchText+"%' OR " +  Column_text +" LIKE '%"+searchText+"%'";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;

@@ -25,15 +25,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     CardView cardView;
     Context context;
     private Activity activity;
-    private ArrayList note_id, note_title, note_text;
+    private ArrayList notes;
 
 
-    CustomAdapter(Activity activity, Context context, ArrayList note_id, ArrayList note_title, ArrayList note_text) {
+    CustomAdapter(Activity activity, Context context, ArrayList notes) {
         this.activity = activity;
         this.context = context;
-        this.note_id = note_id;
-        this.note_title = note_title;
-        this.note_text = note_text;
+        this.notes = notes;
     }
 
     @NonNull
@@ -48,18 +46,20 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder,  final int position) {
-        holder.note_id_txt.setText(String.valueOf(note_id.get(position)));
-        holder.note_title_txt.setText(String.valueOf(note_title.get(position)));
-        holder.note_text_txt.setText(String.valueOf(note_text.get(position)));
-        holder.note_id_txt.setText(String.valueOf(note_id.get(position)));
+    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+        ListItem item = (ListItem) notes.get(position);
+        holder.note_id_txt.setText(String.valueOf(item.id));
+        holder.note_title_txt.setText(String.valueOf(item.title));
+        holder.note_text_txt.setText(String.valueOf(item.text));
+        //holder.note_id_txt.setText(String.valueOf(note_id.get(position)));
         holder.containerNouts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(context, UpdateActivity.class);
-                intent.putExtra("id", String.valueOf(note_id.get(position)));
-                intent.putExtra("title", String.valueOf(note_title.get(position)));
-                intent.putExtra("text", String.valueOf(note_text.get(position)));
+                ListItem item = (ListItem) notes.get(position);
+                intent.putExtra("id", String.valueOf(item.id));
+                intent.putExtra("title", String.valueOf(item.title));
+                intent.putExtra("text", String.valueOf(item.text));
                 activity.startActivityForResult(intent, 1);
             }
         });
@@ -67,15 +67,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     }
 
-    List<String> list;
-
     @Override
     public int getItemCount() {
-        return note_id.size();
+        return notes.size();
     }
 
-    public void fillterList(List<String> filterList){
-        list= filterList;
+    public void fillterList(ArrayList<ListItem> filterList){
+        notes = filterList;
+        //notes.addAll(filterList);
         notifyDataSetChanged();
 
     }

@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class UpdateActivity extends AppCompatActivity {
 
     EditText title_input,Text_input;
@@ -78,6 +80,10 @@ String id,title,text;
         }
     }
 
-
+//    void updateAdapter(ArrayList<ListItem> list) {
+//        listMainLocal.clear();
+//        listMainLocal.addAll(listItems);
+//        notifyDataSetChanged();
+//    }
 
 }
